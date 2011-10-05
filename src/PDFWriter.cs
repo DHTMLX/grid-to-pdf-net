@@ -463,7 +463,7 @@ namespace grid_pdf_net
 	    }
 
 	    private void outputPDF(Stream resp) {
-            pdf.Save(resp);
+            pdf.Save(resp, false);
 	    }
 
 	    private String textWrap(String text, double width, XFont f) {
