@@ -29,18 +29,19 @@ namespace grid_pdf_net
             Header
         }
         private Dictionary<Types, string> paths;
+        protected string imagePath = "grid_pdf_net.Images.";
         public PDFImages(ColorProfile colorScheme){
             switch (colorScheme){
                 case ColorProfile.Color:
                     {
                         paths = new Dictionary<Types, string>()
                         {
-                            {Types.CheckboxOff, "grid_pdf_net.Images.ChOffColor.png"},
-                            {Types.CheckboxOn, "grid_pdf_net.Images.ChOnColor.png"},
-                            {Types.Footer, "grid_pdf_net.Images.footer.jpg"},
-                            {Types.Header, "grid_pdf_net.Images.header.jpg"},
-                            {Types.RadiobuttonOff, "grid_pdf_net.Images.RaOffColor.png"},
-                            {Types.RadiobuttonOn, "grid_pdf_net.Images.RaOnColor.png"}
+                            {Types.CheckboxOff, "ChOffColor.png"},
+                            {Types.CheckboxOn, "ChOnColor.png"},
+                            {Types.Footer, "footer.jpg"},
+                            {Types.Header, "header.jpg"},
+                            {Types.RadiobuttonOff, "RaOffColor.png"},
+                            {Types.RadiobuttonOn, "RaOnColor.png"}
 
                         };
                         break;
@@ -48,12 +49,12 @@ namespace grid_pdf_net
                 case ColorProfile.FullColor:{
                     paths = new Dictionary<Types, string>()
                         {
-                            {Types.CheckboxOff, "grid_pdf_net.Images.ChOffColor.png"},
-                            {Types.CheckboxOn, "grid_pdf_net.Images.ChOnColor.png"},
-                            {Types.Footer, "grid_pdf_net.Images.footer.jpg"},
-                            {Types.Header, "grid_pdf_net.Images.header.jpg"},
-                            {Types.RadiobuttonOff, "grid_pdf_net.Images.RaOffColor.png"},
-                            {Types.RadiobuttonOn, "grid_pdf_net.Images.RaOnColor.png"}
+                            {Types.CheckboxOff, "ChOffColor.png"},
+                            {Types.CheckboxOn, "ChOnColor.png"},
+                            {Types.Footer, "footer.jpg"},
+                            {Types.Header, "header.jpg"},
+                            {Types.RadiobuttonOff, "RaOffColor.png"},
+                            {Types.RadiobuttonOn, "RaOnColor.png"}
 
                         };
                     break;
@@ -62,12 +63,12 @@ namespace grid_pdf_net
                     {
                         paths = new Dictionary<Types, string>()
                         {
-                            {Types.CheckboxOff, "grid_pdf_net.Images.ChOffGray.png"},
-                            {Types.CheckboxOn, "grid_pdf_net.Images.ChOnGray.png"},
-                            {Types.Footer, "grid_pdf_net.Images.footer.jpg"},
-                            {Types.Header, "grid_pdf_net.Images.header.jpg"},
-                            {Types.RadiobuttonOff, "grid_pdf_net.Images.RaOffGray.png"},
-                            {Types.RadiobuttonOn, "grid_pdf_net.Images.RaOnGray.png"}
+                            {Types.CheckboxOff, "ChOffGray.png"},
+                            {Types.CheckboxOn, "ChOnGray.png"},
+                            {Types.Footer, "footer.jpg"},
+                            {Types.Header, "header.jpg"},
+                            {Types.RadiobuttonOff, "gRaOffGray.png"},
+                            {Types.RadiobuttonOn, "RaOnGray.png"}
 
                         };
                         break;
@@ -75,16 +76,21 @@ namespace grid_pdf_net
                 default:
                     paths = new Dictionary<Types, string>()
                         {
-                            {Types.CheckboxOff, "grid_pdf_net.Images.ChOffBw.png"},
-                            {Types.CheckboxOn, "grid_pdf_net.Images.ChOnBw.png"},
-                            {Types.Footer, "grid_pdf_net.Images.footer.jpg"},
-                            {Types.Header, "grid_pdf_net.Images.header.jpg"},
-                            {Types.RadiobuttonOff, "grid_pdf_net.Images.RaOffBw.png"},
-                            {Types.RadiobuttonOn, "grid_pdf_net.Images.RaOnBw.png"}
+                            {Types.CheckboxOff, "ChOffBw.png"},
+                            {Types.CheckboxOn, "ChOnBw.png"},
+                            {Types.Footer, "footer.jpg"},
+                            {Types.Header, "header.jpg"},
+                            {Types.RadiobuttonOff, "RaOffBw.png"},
+                            {Types.RadiobuttonOn, "RaOnBw.png"}
 
                         };
                     break;
 
+            }
+            var keys = paths.Keys.ToArray();
+            foreach (var key in keys)
+            {
+                paths[key] = imagePath + paths[key];
             }
         }
         protected void loadImages()

@@ -34,7 +34,7 @@ namespace grid_pdf_net
         protected double headerHeight = 0;
         protected double pageWidth = 0;
         protected double pageHeight = 0;
-	
+        public string ContentType { get { return "application/pdf"; } }
 	    public double OffsetTop = 30;
 	    public double OffsetBottom = 30;
 	    public double OffsetLeft = 30;
@@ -44,7 +44,7 @@ namespace grid_pdf_net
         public double BorderWidth = 0.5;
 	    public double HeaderImgHeight = 100;
 	    public double FooterImgHeight = 100;
-
+        protected int fontSize = 9;
         protected string bgColor;
         protected string lineColor;
         protected string headerTextColor;
@@ -70,6 +70,28 @@ namespace grid_pdf_net
         protected int cols_stat;
         protected int rows_stat;
 
+
+        public MemoryStream Generate(string xml)
+        {
+            var data = new MemoryStream();
+
+            Generate(xml, data);
+            return data;
+        }
+        public void Generate(string xml, HttpResponse resp)
+        {
+            var data = new MemoryStream();
+
+            resp.ContentType = ContentType;
+            resp.HeaderEncoding = Encoding.UTF8;
+            resp.AppendHeader("Content-Disposition", "attachment;filename=grid.pdf");
+            resp.AppendHeader("Cache-Control", "max-age=0");
+            Generate(xml, data);
+
+            data.WriteTo(resp.OutputStream);
+
+
+        }
 	    public void Generate(String xml, Stream resp){
 		    parser = new PDFXMLParser();
 		    try {
@@ -105,7 +127,7 @@ namespace grid_pdf_net
         }
 	    protected void createPDF() {
 		    pdf =  new PdfDocument();
-		    f1 = new XFont("Verdana", 10);
+            f1 = new XFont("Verdana", fontSize);
 		
             pdf.Version = 14;
 		    pages = new List<PdfPage>();
@@ -214,8 +236,7 @@ namespace grid_pdf_net
 				    rowColor = RGBColor.GetColor(scaleTwoColor);
 			    }
                 rowsOnPage++;
-//RGBColor.GetXColor(border)
-                
+               
                 for (int colNum = 0; colNum < cells.Length; colNum++)
                 {
          #region columnDrawing
@@ -235,20 +256,20 @@ namespace grid_pdf_net
 				    if (cells[ colNum ].GetBold()){
 					    if (cells[ colNum ].GetItalic()){
 						    if (f4 == null){
-							    f4 = new XFont("Helvetica-BoldOblique", 10);
+                                f4 = new XFont("Helvetica-BoldOblique", fontSize);
 							    
 						    }
 						    cf = f4;
 					    } else {
 						    if (f2 == null){
-							    f2 = new XFont("Helvetica-Bold", 10);
+                                f2 = new XFont("Helvetica-Bold", fontSize);
 						
 						    }
 						    cf = f2;
 					    }
 				    } else if (cells[colNum].GetItalic()){
 					    if (f3==null){
-						    f3 = new XFont("Helvetica-Oblique", 10);
+                            f3 = new XFont("Helvetica-Oblique", fontSize);
 				
 					    }	
 					    cf = f3;
@@ -313,7 +334,7 @@ namespace grid_pdf_net
                             XRect text_cell = new XRect();
                             text_cell.Size = new XSize(width - 2 * LineHeight / 5, gfx.MeasureString(text.Text, text.Font).Height);
 
-                            text_cell.Location = new XPoint(x + LineHeight/5, y + (LineHeight - text_cell.Size.Height) / 2);
+                            text_cell.Location = new XPoint(x + LineHeight/5, y + (LineHeight - text_cell.Size.Height) / 1.7);
 
 
                             text.DrawString(text.Text, text.Font, new XSolidBrush((!cells[colNum].GetTextColor().Equals("") && parser.GetProfile().Equals("full_color")) ? RGBColor.GetXColor(cells[colNum].GetTextColor()) : RGBColor.GetXColor(gridTextColor)), text_cell);
@@ -358,7 +379,7 @@ namespace grid_pdf_net
 			    }
 			    x = OffsetLeft;
 		    }
-		    f1 = new XFont("Helvetica", 10);
+            f1 = new XFont("Helvetica", fontSize);
 
             if (!cellsLined)
             {
@@ -520,7 +541,10 @@ namespace grid_pdf_net
 	    public int RowsStat {
 		    get { return this.rows_stat;}
 	    }
-	
+	    /// <summary>
+	    /// Set text which will be printed at the bottom of each page
+	    /// </summary>
+	    /// <param name="mark">Text to be printed</param>
 	    public void SetWatermark(string mark) {
 		    Watermark = mark;	
 	    }
