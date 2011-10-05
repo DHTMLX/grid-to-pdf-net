@@ -127,7 +127,10 @@ namespace grid_pdf_net
         }
 	    protected void createPDF() {
 		    pdf =  new PdfDocument();
-            f1 = new XFont("Verdana", fontSize);
+
+            var font_settings = new XPdfFontOptions(PdfFontEncoding.Unicode);
+
+            f1 = createFont("Verdana", fontSize);
 		
             pdf.Version = 14;
 		    pages = new List<PdfPage>();
@@ -217,7 +220,12 @@ namespace grid_pdf_net
             return width;
 	    }
 
-
+        protected XFont createFont(string name, double size)
+        {
+            var font_settings = new XPdfFontOptions(PdfFontEncoding.Unicode);
+            return new XFont(name, size, new XFontStyle(), font_settings);
+      
+        }
 	    private void printRows(){
 		    PDFRow[] rows = parser.GetGridContent();
 		    rows_stat = rows.Length;
@@ -250,26 +258,27 @@ namespace grid_pdf_net
                     XRect cellIn = new XRect();
                     cellIn.Location = new XPoint(x, y);
                     cellIn.Size = new XSize(width, LineHeight);
-
+             
+                  
                     gfx.DrawRectangle(new XSolidBrush(RGBColor.GetXColor(((!cells[ colNum ].GetBgColor().Equals("")) && (parser.GetProfile() == ColorProfile.FullColor)) ? RGBColor.GetColor(cells[colNum].GetBgColor()) : rowColor)), cellIn);
 
 				    if (cells[ colNum ].GetBold()){
 					    if (cells[ colNum ].GetItalic()){
 						    if (f4 == null){
-                                f4 = new XFont("Helvetica-BoldOblique", fontSize);
-							    
+                                f4 = createFont("Helvetica-BoldOblique", fontSize);
+                               
 						    }
 						    cf = f4;
 					    } else {
 						    if (f2 == null){
-                                f2 = new XFont("Helvetica-Bold", fontSize);
+                                f2 = createFont("Helvetica-Bold", fontSize);
 						
 						    }
 						    cf = f2;
 					    }
 				    } else if (cells[colNum].GetItalic()){
 					    if (f3==null){
-                            f3 = new XFont("Helvetica-Oblique", fontSize);
+                            f3 = createFont("Helvetica-Oblique", fontSize);
 				
 					    }	
 					    cf = f3;
@@ -327,10 +336,6 @@ namespace grid_pdf_net
 					    } else {
 						    double text_y = (LineHeight + f1.Size)/2;
 
-                         
-                            double[] textColor = (!cells[colNum].GetTextColor().Equals("") && parser.GetProfile().Equals("full_color")) ? RGBColor.GetColor(cells[colNum].GetTextColor()) : RGBColor.GetColor(gridTextColor);
-
-
                             XRect text_cell = new XRect();
                             text_cell.Size = new XSize(width - 2 * LineHeight / 5, gfx.MeasureString(text.Text, text.Font).Height);
 
@@ -379,7 +384,7 @@ namespace grid_pdf_net
 			    }
 			    x = OffsetLeft;
 		    }
-            f1 = new XFont("Helvetica", fontSize);
+            f1 = createFont("Helvetica", fontSize);
 
             if (!cellsLined)
             {
