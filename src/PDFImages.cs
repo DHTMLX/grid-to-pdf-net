@@ -15,7 +15,7 @@ using PdfSharp.Drawing.Layout;
 using System.Drawing;
 using System.Reflection;
 
-namespace grid_pdf_net
+namespace DHTMLX.Export.PDF
 {
     public class PDFImages
     {
@@ -29,8 +29,10 @@ namespace grid_pdf_net
             Header
         }
         private Dictionary<Types, string> paths;
-        protected string imagePath = "grid_pdf_net.Images.";
+        protected string imagePath = "DHTMLX.Export.PDF.Images.";
         public PDFImages(ColorProfile colorScheme){
+            imagePath = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".Images.";
+   
             switch (colorScheme){
                 case ColorProfile.Color:
                     {

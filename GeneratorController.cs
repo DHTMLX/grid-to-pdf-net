@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using System.IO;
 
 
-using grid_pdf_net;
+using DHTMLX.Export.PDF;
 
 namespace Grid2Pdf.Controllers
 {

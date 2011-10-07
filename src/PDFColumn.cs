@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-namespace grid_pdf_net
+namespace DHTMLX.Export.PDF
 {
     public class PDFColumn
     {

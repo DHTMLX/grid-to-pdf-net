@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using grid_pdf_net;
+using DHTMLX.Export.PDF;
 namespace Generator
 {
 

@@ -8,8 +8,8 @@
     <ProjectGuid>{37675540-715A-47D8-898A-7BE22B8CAFB5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>grid_pdf_net</RootNamespace>
-    <AssemblyName>grid-pdf-net</AssemblyName>
+    <RootNamespace>DHTMLX.Export.PDF</RootNamespace>
+    <AssemblyName>DHTMLX.Export.PDF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

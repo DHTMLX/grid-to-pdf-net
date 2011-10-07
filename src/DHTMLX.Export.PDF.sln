@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grid-pdf-net", "grid-pdf-net.csproj", "{37675540-715A-47D8-898A-7BE22B8CAFB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DHTMLX.Export.PDF", "DHTMLX.Export.PDF.csproj", "{37675540-715A-47D8-898A-7BE22B8CAFB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 
 using PdfSharp;
-namespace grid_pdf_net
+namespace DHTMLX.Export.PDF
 {
 
     public enum ColorProfile

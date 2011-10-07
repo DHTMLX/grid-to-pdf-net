@@ -12,7 +12,7 @@ using PdfSharp.Pdf.IO;
 using PdfSharp.Drawing.Layout;
 
 
-namespace grid_pdf_net
+namespace DHTMLX.Export.PDF
 {
 
 

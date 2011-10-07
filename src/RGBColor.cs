@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using PdfSharp.Drawing;
-namespace grid_pdf_net
+namespace DHTMLX.Export.PDF
 {
     public class RGBColor
     {
