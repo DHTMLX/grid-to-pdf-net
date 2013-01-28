@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using System.Text;
 using System.Reflection;
 
@@ -89,11 +89,13 @@ namespace DHTMLX.Export.PDF
                     break;
 
             }
-            var keys = paths.Keys.ToArray();
+            var keys = paths.Keys;
+            var updPath = new Dictionary<Types, string>();
             foreach (var key in keys)
             {
-                paths[key] = imagePath + paths[key];
+                updPath.Add(key, imagePath + paths[key]);
             }
+            paths = updPath;
         }
         protected void loadImages()
         {
