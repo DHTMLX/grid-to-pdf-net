@@ -7,9 +7,9 @@ namespace DHTMLX.Export.PDF
 {
     public class PDFColumn
     {
-        private String colName;
-        private String type;
-        private String align;
+        private string colName;
+        private string type;
+        private string align;
         private int colspan;
         private int rowspan;
         private double width = 0;
@@ -26,23 +26,27 @@ namespace DHTMLX.Export.PDF
             else
                 colName = "";
 
-            String width_string = parent.GetAttribute("width");
+            string width_string = parent.GetAttribute("width");
 
             if (width_string.Length > 0)
             {
-                width = int.Parse(width_string);
+                if (!double.TryParse(width_string, out width) || double.IsNaN(width))
+                    width = 0;
             }
+
             type = parent.GetAttribute("type");
             align = parent.GetAttribute("align");
-            String colspan_string = parent.GetAttribute("colspan");
+            string colspan_string = parent.GetAttribute("colspan");
             if (colspan_string.Length > 0)
             {
-                colspan = int.Parse(colspan_string);
+                if (!int.TryParse(colspan_string, out colspan))
+                    colspan = 0;
             }
-            String rowspan_string = parent.GetAttribute("rowspan");
+            string rowspan_string = parent.GetAttribute("rowspan");
             if (rowspan_string.Length > 0)
             {
-                rowspan = int.Parse(rowspan_string);
+                if (!int.TryParse(rowspan_string, out rowspan))
+                    rowspan = 0;
             }
         }
 
@@ -91,7 +95,7 @@ namespace DHTMLX.Export.PDF
             return align;
         }
 
-        public String getType()
+        public string getType()
         {
             return type;
         }

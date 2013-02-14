@@ -15,12 +15,33 @@ namespace DHTMLX.Export.PDF
 {
 
 
-
+    public enum Orientaion{
+        Default,
+        Portrait,
+        Landscape, 
+    }
     public class PDFWriter
     {
+        public PDFWriter()
+        {
+            this.Orientation = Orientaion.Default;
 
+            OffsetTop = 30;
+	        OffsetBottom = 30;
+	        OffsetLeft = 30;
+	        OffsetRight = 30;
+	        LineHeight = 20;
+	        CellOffset = 3;
+            BorderWidth = 0.5;
+	        HeaderImgHeight = 100;
+	        FooterImgHeight = 100;
+
+            HeaderLineHeight = 30;
+	        PageNumTemplate = "Page {pageNum}/{allNum}";
+	        Watermark = null;
+        }
         protected PDFImages images;
-
+        public Orientaion Orientation{get;set;}
 
         protected PDFXMLParser parser;
         protected PdfDocument pdf;
@@ -34,15 +55,15 @@ namespace DHTMLX.Export.PDF
         protected double pageWidth = 0;
         protected double pageHeight = 0;
         public string ContentType { get { return "application/pdf"; } }
-	    public double OffsetTop = 30;
-	    public double OffsetBottom = 30;
-	    public double OffsetLeft = 30;
-	    public double OffsetRight = 30;
-	    public double LineHeight = 20;
-	    public double CellOffset = 3;
-        public double BorderWidth = 0.5;
-	    public double HeaderImgHeight = 100;
-	    public double FooterImgHeight = 100;
+	    public double OffsetTop {get;set;}
+        public double OffsetBottom { get; set; }
+        public double OffsetLeft { get; set; }
+        public double OffsetRight { get; set; }
+        public double LineHeight { get; set; }
+        public double CellOffset { get; set; }
+        public double BorderWidth { get; set; }
+        public double HeaderImgHeight { get; set; }
+	    public double FooterImgHeight {get;set;}
         protected int fontSize = 9;
         protected string bgColor;
         protected string lineColor;
@@ -52,10 +73,10 @@ namespace DHTMLX.Export.PDF
         protected string gridTextColor;
         protected string pageTextColor;
         protected string watermarkTextColor;
-	
-	    public double HeaderLineHeight = 30;
-	    public string PageNumTemplate = "Page {pageNum}/{allNum}";
-	    public string Watermark = null;
+
+        public double HeaderLineHeight { get; set; }
+        public string PageNumTemplate { get; set; }
+        public string Watermark { get; set; }
 	
 	    protected PDFColumn[][] cols = null;
 
@@ -94,7 +115,7 @@ namespace DHTMLX.Export.PDF
 	    public void Generate(String xml, Stream resp){
 		    parser = new PDFXMLParser();
 		    try {
-			    parser.SetXML(xml);
+			    parser.SetXML(xml, this.Orientation);//TO DO remove second param
 			
 			    createPDF();
 			    setColorProfile();
@@ -120,8 +141,9 @@ namespace DHTMLX.Export.PDF
             graphics.Add(gfx);
             pages.Add(page);
 
-            page.Size = parser.GetSize();
             page.Orientation = parser.GetOrientation();
+            page.Size = parser.GetSize();        
+            
             return page;
         }
 	    protected void createPDF() {

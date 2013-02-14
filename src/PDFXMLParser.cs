@@ -53,7 +53,7 @@ namespace DHTMLX.Export.PDF
             }
         }
 
-	    public void SetXML(String xml)
+	    public void SetXML(String xml, Orientaion orient)
 	   {
 
 		   
@@ -78,8 +78,14 @@ namespace DHTMLX.Export.PDF
 		    if (profile_string != null) {
                 profile = StringToColorProfile(profile_string);
 		    }
-
+            
+            
 		    String orientation_string = root.GetAttribute("orientation");
+            if (orient != Orientaion.Default)
+            {
+                orientation_string = orient.ToString("g").ToLower();
+            }
+
 		    GetHeaderInfo();
 		    if (orientation_string != "") {
 			    if (orientation_string.ToLower().Equals("landscape")) {
@@ -97,12 +103,12 @@ namespace DHTMLX.Export.PDF
                 if (sum_width / widths.Length < 80)
                 {
                     this.orientation = PageOrientation.Landscape;
-                    this.size = PageSize.Letter;
+                    this.size = PageSize.A4;
                 }
                 else
                 {
                     this.orientation = PageOrientation.Portrait;
-                    this.size = PageSize.Letter;
+                    this.size = PageSize.A4;
                 }
 		    }
 		    String w_header = root.GetAttribute("without_header");
