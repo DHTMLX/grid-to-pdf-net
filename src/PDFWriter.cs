@@ -33,10 +33,10 @@ namespace DHTMLX.Export.PDF
 	        LineHeight = 20;
 	        CellOffset = 3;
             BorderWidth = 0.5;
-	        HeaderImgHeight = 100;
-	        FooterImgHeight = 100;
+	     
 
             HeaderLineHeight = 30;
+            OutputFileName = "grid.pdf";
 	        PageNumTemplate = "Page {pageNum}/{allNum}";
 	        Watermark = null;
         }
@@ -55,6 +55,7 @@ namespace DHTMLX.Export.PDF
         protected double pageWidth = 0;
         protected double pageHeight = 0;
         public string ContentType { get { return "application/pdf"; } }
+        public string OutputFileName { get; set; }
 	    public double OffsetTop {get;set;}
         public double OffsetBottom { get; set; }
         public double OffsetLeft { get; set; }
@@ -64,6 +65,32 @@ namespace DHTMLX.Export.PDF
         public double BorderWidth { get; set; }
         public double HeaderImgHeight { get; set; }
 	    public double FooterImgHeight {get;set;}
+
+        protected double getHeaderImgHeight()
+        {
+            if (this.HeaderImgHeight == default(double))
+            {
+                return this.images.HeaderHeight;
+            }
+            else
+            {
+                return this.HeaderImgHeight;
+            }
+        }
+        protected double getFooterImgHeight()
+        {
+            if (this.FooterImgHeight == default(double))
+            {
+                return this.images.FooterHeight;
+            }
+            else
+            {
+                return this.FooterImgHeight;
+            }
+        }
+        public string HeaderImgPath { get; set; }
+        public string FooterImgPath { get; set; }
+
         protected int fontSize = 9;
         protected string bgColor;
         protected string lineColor;
@@ -104,7 +131,7 @@ namespace DHTMLX.Export.PDF
 
             resp.ContentType = ContentType;
             resp.HeaderEncoding = Encoding.UTF8;
-            resp.AppendHeader("Content-Disposition", "attachment;filename=grid.pdf");
+            resp.AppendHeader("Content-Disposition", string.Format("attachment;filename={0}", OutputFileName));
             resp.AppendHeader("Cache-Control", "max-age=0");
             Generate(xml, data);
 
@@ -116,9 +143,9 @@ namespace DHTMLX.Export.PDF
 		    parser = new PDFXMLParser();
 		    try {
 			    parser.SetXML(xml, this.Orientation);//TO DO remove second param
-			
-			    createPDF();
 			    setColorProfile();
+			    createPDF();
+			    
 			    headerPrint();
 			    printRows();
 			    printFooter();
@@ -126,7 +153,7 @@ namespace DHTMLX.Export.PDF
 			    outputPDF(resp);
 
 		    } catch (Exception e) {
-			    
+                throw;
 		    } 
 	    }
 
@@ -394,13 +421,21 @@ namespace DHTMLX.Export.PDF
                     }
                     
                     newPage();
-                    rowsOnPage = 0;
+                    
 				    if (firstPage == true) {
-					    pageHeight += HeaderImgHeight;
-					    OffsetTop -= HeaderImgHeight;
+                        pageHeight += getHeaderImgHeight();
+                        OffsetTop -= getHeaderImgHeight();
 					    firstPage = false;
 				    }
+
+                    double imgHeight = 0;
+                    if (rows.Length - rowNum < rowsOnPage && parser.GetFooter())
+                    {
+                        imgHeight = getFooterImgHeight();
+                    }
+                    rowsOnPage = 0;
 				    headerPrint();
+                    footerHeight += imgHeight;
 				    y = OffsetTop + headerHeight;
 			    }
 			    x = OffsetLeft;
@@ -469,10 +504,10 @@ namespace DHTMLX.Export.PDF
 	    private void printHeader(){
 		    Boolean header = parser.GetHeader();
 		    if (header == true) {
-                XImage im = images.Get(PDFImages.Types.Footer);            
+                XImage im = images.Get(PDFImages.Types.Header);            
                 gfx.DrawImage(im, new XPoint(OffsetLeft, OffsetTop));
-			    pageHeight -= HeaderImgHeight;
-			    OffsetTop += HeaderImgHeight;
+                pageHeight -= getHeaderImgHeight();
+                OffsetTop += getHeaderImgHeight();
 			    firstPage = true;
 		    }
 	    }
@@ -480,10 +515,10 @@ namespace DHTMLX.Export.PDF
 	    private void printFooter(){
 		    Boolean footer = parser.GetFooter();
 		    if (footer == true) {			   
-                XImage im = images.Get(PDFImages.Types.Footer); ;		  
-                gfx.DrawImage(im, new XPoint(OffsetLeft, pageHeight + OffsetTop - FooterImgHeight));
-			    pageHeight -= FooterImgHeight;
-			    OffsetTop += FooterImgHeight;
+                XImage im = images.Get(PDFImages.Types.Footer); ;
+                gfx.DrawImage(im, new XPoint(OffsetLeft, pageHeight + OffsetTop - getFooterImgHeight()));
+                pageHeight -= getFooterImgHeight();
+                OffsetTop += getFooterImgHeight();
 			    firstPage = true;
 		    }
 	    }
@@ -521,7 +556,7 @@ namespace DHTMLX.Export.PDF
 		    ColorProfile profile = parser.GetProfile();
             if (this.images == null)
             {
-                this.images = new PDFImages(profile);
+                this.images = new PDFImages(profile, HeaderImgPath, FooterImgPath);
             }
             if (profile == ColorProfile.Color || profile == ColorProfile.FullColor)
             {

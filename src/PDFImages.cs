@@ -28,10 +28,14 @@ namespace DHTMLX.Export.PDF
             Footer,
             Header
         }
+        protected double headerHeight = -1;
+        protected double footerHeight = -1;
         private Dictionary<Types, string> paths;
-        protected string imagePath = "DHTMLX.Export.PDF.Images.";
-        public PDFImages(ColorProfile colorScheme){
-            imagePath = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + ".Images.";
+        protected string imagePath = null;
+        protected string assemblyName = null;
+        public PDFImages(ColorProfile colorScheme, string header_path, string footer_path){
+            assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+            imagePath = assemblyName + ".Images.";
    
             switch (colorScheme){
                 case ColorProfile.Color:
@@ -40,8 +44,6 @@ namespace DHTMLX.Export.PDF
                         {
                             {Types.CheckboxOff, "ChOffColor.png"},
                             {Types.CheckboxOn, "ChOnColor.png"},
-                            {Types.Footer, "footer.jpg"},
-                            {Types.Header, "header.jpg"},
                             {Types.RadiobuttonOff, "RaOffColor.png"},
                             {Types.RadiobuttonOn, "RaOnColor.png"}
 
@@ -53,8 +55,6 @@ namespace DHTMLX.Export.PDF
                         {
                             {Types.CheckboxOff, "ChOffColor.png"},
                             {Types.CheckboxOn, "ChOnColor.png"},
-                            {Types.Footer, "footer.jpg"},
-                            {Types.Header, "header.jpg"},
                             {Types.RadiobuttonOff, "RaOffColor.png"},
                             {Types.RadiobuttonOn, "RaOnColor.png"}
 
@@ -67,8 +67,6 @@ namespace DHTMLX.Export.PDF
                         {
                             {Types.CheckboxOff, "ChOffGray.png"},
                             {Types.CheckboxOn, "ChOnGray.png"},
-                            {Types.Footer, "footer.jpg"},
-                            {Types.Header, "header.jpg"},
                             {Types.RadiobuttonOff, "gRaOffGray.png"},
                             {Types.RadiobuttonOn, "RaOnGray.png"}
 
@@ -80,8 +78,6 @@ namespace DHTMLX.Export.PDF
                         {
                             {Types.CheckboxOff, "ChOffBw.png"},
                             {Types.CheckboxOn, "ChOnBw.png"},
-                            {Types.Footer, "footer.jpg"},
-                            {Types.Header, "header.jpg"},
                             {Types.RadiobuttonOff, "RaOffBw.png"},
                             {Types.RadiobuttonOn, "RaOnBw.png"}
 
@@ -95,6 +91,10 @@ namespace DHTMLX.Export.PDF
             {
                 updPath.Add(key, imagePath + paths[key]);
             }
+
+            updPath.Add(Types.Header, !string.IsNullOrEmpty(header_path) ? header_path : imagePath + "header.jpg");
+            updPath.Add(Types.Footer, !string.IsNullOrEmpty(footer_path) ? footer_path : imagePath + "footer.jpg");
+
             paths = updPath;
         }
         protected void loadImages()
@@ -103,9 +103,46 @@ namespace DHTMLX.Export.PDF
             images = new Dictionary<Types, Stream>(6);
             foreach (Types type in Enum.GetValues(typeof(Types)))
             {
-                images[type] = assembly.GetManifestResourceStream(paths[type]);
+                if (paths[type].StartsWith(assemblyName))
+                {
+                    images[type] = assembly.GetManifestResourceStream(paths[type]);
+                }
+                else
+                {
+                    var img_stream = new System.IO.MemoryStream();
+
+                    var file_str = (Stream)File.OpenRead(paths[type]);
+                    byte[] bytes = new byte[file_str.Length];
+                    file_str.Read(bytes, 0, (int)file_str.Length);
+                    img_stream.Write(bytes, 0, (int)file_str.Length);
+                    file_str.Close();
+
+                    images[type] = img_stream;
+                }
             }
             
+        }
+        public double HeaderHeight
+        {
+            get
+            {
+                if (headerHeight == -1)
+                {
+                    headerHeight = this.Get(Types.Header).PointHeight;
+                }
+                return headerHeight;
+            }
+        }
+        public double FooterHeight
+        {
+            get
+            {
+                if (footerHeight == -1)
+                {
+                    footerHeight = this.Get(Types.Footer).PointHeight;
+                }
+                return footerHeight;
+            }
         }
         public XImage Get(Types type)
         {
